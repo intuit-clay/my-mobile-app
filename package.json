@@ -2,12 +2,15 @@
   "name": "my-mobile-app",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": "https://intuit-clay.github.io/my-mobile-app",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export:web"
+    "build:web": "expo export:web",
+    "predeploy": "expo export:web",
+    "deploy": "gh-pages -d web-build"
   },
   "dependencies": {
     "expo": "~55.0.8",
@@ -17,5 +20,7 @@
     "react-native": "0.83.2",
     "react-native-web": "^0.21.0"
   },
-  "private": true
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
 }
