@@ -80,86 +80,90 @@ export default function App() {
         </View>
 
         <View style={styles.bookingSection}>
-          <Text style={styles.sectionTitle}>Select Date</Text>
-          <View style={styles.card}>
-            <Text style={styles.monthTitle}>{monthNames[month]} {year}</Text>
-            
-            <View style={styles.calendarHeader}>
-              {dayNames.map(day => (
-                <Text key={day} style={styles.dayName}>{day}</Text>
-              ))}
-            </View>
-
-            <View style={styles.calendarGrid}>
-              {[...Array(firstDay)].map((_, index) => (
-                <View key={`empty-${index}`} style={styles.dayCell} />
-              ))}
-              
-              {[...Array(daysInMonth)].map((_, index) => {
-                const day = index + 1;
-                const isToday = day === today;
-                const isPast = day < today;
-                const isSelected = selectedDate === day;
+          <Text style={styles.sectionTitle}>Select Date & Time</Text>
+          <View style={styles.dateTimeContainer}>
+            <View style={styles.calendarContainer}>
+              <View style={styles.card}>
+                <Text style={styles.monthTitle}>{monthNames[month]} {year}</Text>
                 
-                return (
-                  <TouchableOpacity
-                    key={day}
-                    style={[
-                      styles.dayCell,
-                      isToday && styles.todayCell,
-                      isSelected && styles.selectedDayCell,
-                      isPast && styles.pastDayCell
-                    ]}
-                    onPress={() => !isPast && setSelectedDate(day)}
-                    disabled={isPast}
-                  >
-                    <Text style={[
-                      styles.dayText,
-                      isToday && styles.todayText,
-                      isSelected && styles.selectedDayText,
-                      isPast && styles.pastDayText
-                    ]}>
-                      {day}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
-        </View>
+                <View style={styles.calendarHeader}>
+                  {dayNames.map(day => (
+                    <Text key={day} style={styles.dayName}>{day}</Text>
+                  ))}
+                </View>
 
-        <View style={styles.bookingSection}>
-          <Text style={styles.sectionTitle}>Select Time</Text>
-          <View style={styles.card}>
-            <TouchableOpacity 
-              style={styles.dropdown}
-              onPress={() => setShowTimePicker(!showTimePicker)}
-            >
-              <Text style={[styles.dropdownText, !selectedTime && styles.placeholderText]}>
-                {selectedTime || 'Choose a time...'}
-              </Text>
-              <Text style={styles.dropdownArrow}>{showTimePicker ? '▲' : '▼'}</Text>
-            </TouchableOpacity>
-            
-            {showTimePicker && (
-              <View style={styles.dropdownMenu}>
-                {timeSlots.map((time, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={[
-                      styles.dropdownItem,
-                      index === timeSlots.length - 1 && styles.dropdownItemLast
-                    ]}
-                    onPress={() => {
-                      setSelectedTime(time);
-                      setShowTimePicker(false);
-                    }}
-                  >
-                    <Text style={styles.dropdownItemText}>{time}</Text>
-                  </TouchableOpacity>
-                ))}
+                <View style={styles.calendarGrid}>
+                  {[...Array(firstDay)].map((_, index) => (
+                    <View key={`empty-${index}`} style={styles.dayCell} />
+                  ))}
+                  
+                  {[...Array(daysInMonth)].map((_, index) => {
+                    const day = index + 1;
+                    const isToday = day === today;
+                    const isPast = day < today;
+                    const isSelected = selectedDate === day;
+                    
+                    return (
+                      <TouchableOpacity
+                        key={day}
+                        style={[
+                          styles.dayCell,
+                          isToday && styles.todayCell,
+                          isSelected && styles.selectedDayCell,
+                          isPast && styles.pastDayCell
+                        ]}
+                        onPress={() => !isPast && setSelectedDate(day)}
+                        disabled={isPast}
+                      >
+                        <Text style={[
+                          styles.dayText,
+                          isToday && styles.todayText,
+                          isSelected && styles.selectedDayText,
+                          isPast && styles.pastDayText
+                        ]}>
+                          {day}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
               </View>
-            )}
+            </View>
+
+            <View style={styles.timeContainer}>
+              <View style={styles.card}>
+                <Text style={styles.timeTitle}>Select Time</Text>
+                <TouchableOpacity 
+                  style={styles.dropdown}
+                  onPress={() => setShowTimePicker(!showTimePicker)}
+                >
+                  <Text style={[styles.dropdownText, !selectedTime && styles.placeholderText]}>
+                    {selectedTime || 'Choose a time...'}
+                  </Text>
+                  <Text style={styles.dropdownArrow}>{showTimePicker ? '▲' : '▼'}</Text>
+                </TouchableOpacity>
+                
+                {showTimePicker && (
+                  <View style={styles.dropdownMenu}>
+                    {timeSlots.map((time, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={[
+                          styles.dropdownItem,
+                          index === timeSlots.length - 1 && styles.dropdownItemLast
+                        ]}
+                        onPress={() => {
+                          setSelectedTime(time);
+                          setShowTimePicker(false);
+                        }}
+                      >
+                        <Text style={styles.dropdownItemText}>{time}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
           </View>
         </View>
 
@@ -218,6 +222,18 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 10,
   },
+  dateTimeContainer: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  calendarContainer: {
+    maxWidth: 400,
+    flex: 1,
+  },
+  timeContainer: {
+    flex: 1,
+    alignSelf: 'flex-start',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -227,6 +243,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+  },
+  timeTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
   },
   dropdown: {
     backgroundColor: '#f9fafb',
