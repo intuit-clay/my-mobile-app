@@ -8,6 +8,8 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [showRoomPicker, setShowRoomPicker] = useState(false);
   const [additionalContext, setAdditionalContext] = useState('');
   const [link, setLink] = useState('');
 
@@ -19,8 +21,16 @@ export default function App() {
   ];
 
   const timeSlots = [
-    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
-    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+    '1:00-1:30',
+    '1:30-2:00'
+  ];
+
+  const rooms = [
+    'Conference Room A',
+    'Conference Room B',
+    'Meeting Room 1',
+    'Meeting Room 2',
+    'Virtual (Zoom)'
   ];
 
   const getDaysInMonth = () => {
@@ -143,39 +153,60 @@ export default function App() {
             <View style={styles.timeContainer}>
               <View style={styles.card}>
                 <Text style={styles.timeTitle}>Select Time</Text>
+                <View style={styles.timeOptionsContainer}>
+                  {timeSlots.map((time, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.timeOption,
+                        selectedTime === time && styles.timeOptionSelected
+                      ]}
+                      onPress={() => setSelectedTime(time)}
+                    >
+                      <Text style={[
+                        styles.timeOptionText,
+                        selectedTime === time && styles.timeOptionTextSelected
+                      ]}>
+                        {time}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                <Text style={styles.roomTitle}>Pick a Room</Text>
                 <TouchableOpacity 
                   style={[
                     styles.dropdown,
-                    (showTimePicker || selectedTime) && styles.dropdownActive
+                    (showRoomPicker || selectedRoom) && styles.dropdownActive
                   ]}
-                  onPress={() => setShowTimePicker(!showTimePicker)}
+                  onPress={() => setShowRoomPicker(!showRoomPicker)}
                 >
-                  <Text style={[styles.dropdownText, !selectedTime && styles.placeholderText]}>
-                    {selectedTime || 'Choose a time...'}
+                  <Text style={[styles.dropdownText, !selectedRoom && styles.placeholderText]}>
+                    {selectedRoom || 'Choose a room...'}
                   </Text>
                   <Text style={[
                     styles.dropdownArrow,
-                    (showTimePicker || selectedTime) && styles.dropdownArrowActive
+                    (showRoomPicker || selectedRoom) && styles.dropdownArrowActive
                   ]}>
-                    {showTimePicker ? '▲' : '▼'}
+                    {showRoomPicker ? '▲' : '▼'}
                   </Text>
                 </TouchableOpacity>
                 
-                {showTimePicker && (
+                {showRoomPicker && (
                   <View style={styles.dropdownMenu}>
-                    {timeSlots.map((time, index) => (
+                    {rooms.map((room, index) => (
                       <TouchableOpacity
                         key={index}
                         style={[
                           styles.dropdownItem,
-                          index === timeSlots.length - 1 && styles.dropdownItemLast
+                          index === rooms.length - 1 && styles.dropdownItemLast
                         ]}
                         onPress={() => {
-                          setSelectedTime(time);
-                          setShowTimePicker(false);
+                          setSelectedRoom(room);
+                          setShowRoomPicker(false);
                         }}
                       >
-                        <Text style={styles.dropdownItemText}>{time}</Text>
+                        <Text style={styles.dropdownItemText}>{room}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -221,7 +252,7 @@ export default function App() {
           </View>
         </View>
 
-        {selectedTopic && selectedDate && selectedTime && (
+        {selectedTopic && selectedDate && selectedTime && selectedRoom && (
           <View style={styles.bookingSection}>
             <View style={styles.confirmationCard}>
               <Text style={styles.confirmationTitle}>Booking Summary</Text>
@@ -230,6 +261,7 @@ export default function App() {
                 Date: {monthNames[month]} {selectedDate}, {year}
               </Text>
               <Text style={styles.confirmationText}>Time: {selectedTime}</Text>
+              <Text style={styles.confirmationText}>Room: {selectedRoom}</Text>
               {additionalContext ? (
                 <Text style={styles.confirmationText}>Context: {additionalContext}</Text>
               ) : null}
@@ -305,6 +337,38 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   timeTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  timeOptionsContainer: {
+    marginBottom: 20,
+  },
+  timeOption: {
+    backgroundColor: '#f9fafb',
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  timeOptionSelected: {
+    backgroundColor: '#3b82f6',
+    borderColor: '#3b82f6',
+  },
+  timeOptionText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
+  timeOptionTextSelected: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  roomTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
