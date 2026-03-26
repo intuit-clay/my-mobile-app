@@ -1,0 +1,41 @@
+---
+description: Deploy changes only to Vercel, not GitHub Pages
+alwaysApply: true
+---
+
+# Deployment Policy: Vercel Only
+
+When deploying changes to this project, **ONLY use Vercel** for deployments.
+
+## Deployment Method
+
+Vercel automatically deploys when changes are pushed to GitHub:
+
+```bash
+# ✅ CORRECT: Push to GitHub (Vercel auto-deploys)
+git add .
+git commit -m "Your commit message"
+git push origin main
+```
+
+## What NOT to Do
+
+```bash
+# ❌ NEVER run these commands:
+npm run deploy          # Deploys to GitHub Pages
+npm run predeploy       # Builds for GitHub Pages
+gh-pages -d dist        # Manual GitHub Pages deployment
+```
+
+## Why Vercel Only?
+
+- **Single source of truth**: https://my-mobile-app-taupe.vercel.app/
+- **Automatic deployments**: Vercel auto-deploys on git push
+- **No manual deploy step**: Just commit and push to GitHub
+
+## Summary
+
+1. Make code changes
+2. Commit changes with git
+3. Push to GitHub with `git push origin main`
+4. Vercel automatically deploys (no additional commands needed)

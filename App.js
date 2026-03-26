@@ -27,67 +27,68 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      
-      <View style={styles.header}>
-        <Text style={styles.title}>My Tasks</Text>
-        <Text style={styles.subtitle}>{tasks.length} tasks</Text>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add a new task..."
-          value={inputText}
-          onChangeText={setInputText}
-          onSubmitEditing={addTask}
-        />
-        <TouchableOpacity style={styles.addButton} onPress={addTask}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.taxSection}>
-        <Text style={styles.taxTitle}>Tax Calculator</Text>
-        <View style={styles.taxCard}>
-          <Text style={styles.taxLabel}>Enter tax amount:</Text>
-          <TextInput
-            style={styles.taxInput}
-            placeholder="$0.00"
-            value={taxAmount}
-            onChangeText={setTaxAmount}
-            keyboardType="numeric"
-            placeholderTextColor="#999"
-          />
-          {taxAmount ? (
-            <View style={styles.taxResultBox}>
-              <Text style={styles.taxResultText}>
-                Tax Amount: ${taxAmount}
-              </Text>
-            </View>
-          ) : null}
+      <View style={styles.contentWrapper}>
+        <View style={styles.header}>
+          <Text style={styles.title}>My Tasks</Text>
+          <Text style={styles.subtitle}>{tasks.length} tasks</Text>
         </View>
-      </View>
 
-      <ScrollView style={styles.taskList}>
-        {tasks.map(task => (
-          <View key={task.id} style={styles.taskItem}>
-            <TouchableOpacity 
-              style={styles.taskContent}
-              onPress={() => toggleTask(task.id)}
-            >
-              <View style={[styles.checkbox, task.completed && styles.checkboxCompleted]}>
-                {task.completed && <Text style={styles.checkmark}>✓</Text>}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Add a new task..."
+            value={inputText}
+            onChangeText={setInputText}
+            onSubmitEditing={addTask}
+          />
+          <TouchableOpacity style={styles.addButton} onPress={addTask}>
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.taxSection}>
+          <Text style={styles.taxTitle}>Tax Calculator</Text>
+          <View style={styles.taxCard}>
+            <Text style={styles.taxLabel}>Enter tax amount:</Text>
+            <TextInput
+              style={styles.taxInput}
+              placeholder="$0.00"
+              value={taxAmount}
+              onChangeText={setTaxAmount}
+              keyboardType="numeric"
+              placeholderTextColor="#999"
+            />
+            {taxAmount ? (
+              <View style={styles.taxResultBox}>
+                <Text style={styles.taxResultText}>
+                  Tax Amount: ${taxAmount}
+                </Text>
               </View>
-              <Text style={[styles.taskText, task.completed && styles.taskTextCompleted]}>
-                {task.text}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteTask(task.id)}>
-              <Text style={styles.deleteButton}>✕</Text>
-            </TouchableOpacity>
+            ) : null}
           </View>
-        ))}
-      </ScrollView>
+        </View>
+
+        <ScrollView style={styles.taskList}>
+          {tasks.map(task => (
+            <View key={task.id} style={styles.taskItem}>
+              <TouchableOpacity 
+                style={styles.taskContent}
+                onPress={() => toggleTask(task.id)}
+              >
+                <View style={[styles.checkbox, task.completed && styles.checkboxCompleted]}>
+                  {task.completed && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+                <Text style={[styles.taskText, task.completed && styles.taskTextCompleted]}>
+                  {task.text}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteTask(task.id)}>
+                <Text style={styles.deleteButton}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -97,6 +98,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     paddingTop: 60,
+    alignItems: 'center',
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 800,
+    flex: 1,
   },
   header: {
     paddingHorizontal: 20,
