@@ -38,9 +38,9 @@ export default function App() {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <StatusBar style="auto" />
-      <ScrollView style={styles.contentWrapper}>
+      <View style={styles.contentWrapper}>
         <View style={styles.header}>
           <Text style={styles.title}>Kyle Office Hours</Text>
           <Text style={styles.subtitle}>Select a date and time</Text>
@@ -242,8 +242,8 @@ export default function App() {
             </View>
           </View>
         )}
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -251,12 +251,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    paddingTop: 60,
-    alignItems: 'center',
   },
   contentWrapper: {
     width: '100%',
     maxWidth: 800,
+    alignSelf: 'center',
+    paddingTop: 60,
   },
   header: {
     paddingHorizontal: 20,
