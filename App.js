@@ -213,6 +213,24 @@ export default function App() {
                 )}
               </View>
             </View>
+
+            <View style={styles.linkContainer}>
+              <View style={styles.card}>
+                <Text style={styles.linkTitle}>Link (Optional)</Text>
+                <TextInput
+                  style={[
+                    styles.textInput,
+                    link && styles.textInputActive
+                  ]}
+                  placeholder="Paste a link..."
+                  value={link}
+                  onChangeText={setLink}
+                  keyboardType="url"
+                  placeholderTextColor="#999"
+                  autoCapitalize="none"
+                />
+              </View>
+            </View>
           </View>
         </View>
 
@@ -230,24 +248,6 @@ export default function App() {
               multiline
               numberOfLines={4}
               placeholderTextColor="#999"
-            />
-          </View>
-        </View>
-
-        <View style={styles.bookingSection}>
-          <Text style={styles.sectionTitle}>Link (Optional)</Text>
-          <View style={styles.card}>
-            <TextInput
-              style={[
-                styles.textInput,
-                link && styles.textInputActive
-              ]}
-              placeholder="Paste a link to relevant content..."
-              value={link}
-              onChangeText={setLink}
-              keyboardType="url"
-              placeholderTextColor="#999"
-              autoCapitalize="none"
             />
           </View>
         </View>
@@ -325,6 +325,16 @@ const styles = StyleSheet.create({
   timeContainer: {
     flex: 1,
     alignSelf: 'flex-start',
+  },
+  linkContainer: {
+    flex: 1,
+    alignSelf: 'flex-start',
+  },
+  linkTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
   },
   card: {
     backgroundColor: '#fff',
