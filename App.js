@@ -48,13 +48,21 @@ export default function App() {
           <Text style={styles.sectionTitle}>Meeting Topic</Text>
           <View style={styles.card}>
             <TouchableOpacity 
-              style={styles.dropdown}
+              style={[
+                styles.dropdown,
+                (showDropdown || selectedTopic) && styles.dropdownActive
+              ]}
               onPress={() => setShowDropdown(!showDropdown)}
             >
               <Text style={[styles.dropdownText, !selectedTopic && styles.placeholderText]}>
                 {selectedTopic || 'Choose a topic...'}
               </Text>
-              <Text style={styles.dropdownArrow}>{showDropdown ? '▲' : '▼'}</Text>
+              <Text style={[
+                styles.dropdownArrow,
+                (showDropdown || selectedTopic) && styles.dropdownArrowActive
+              ]}>
+                {showDropdown ? '▲' : '▼'}
+              </Text>
             </TouchableOpacity>
             
             {showDropdown && (
@@ -134,13 +142,21 @@ export default function App() {
               <View style={styles.card}>
                 <Text style={styles.timeTitle}>Select Time</Text>
                 <TouchableOpacity 
-                  style={styles.dropdown}
+                  style={[
+                    styles.dropdown,
+                    (showTimePicker || selectedTime) && styles.dropdownActive
+                  ]}
                   onPress={() => setShowTimePicker(!showTimePicker)}
                 >
                   <Text style={[styles.dropdownText, !selectedTime && styles.placeholderText]}>
                     {selectedTime || 'Choose a time...'}
                   </Text>
-                  <Text style={styles.dropdownArrow}>{showTimePicker ? '▲' : '▼'}</Text>
+                  <Text style={[
+                    styles.dropdownArrow,
+                    (showTimePicker || selectedTime) && styles.dropdownArrowActive
+                  ]}>
+                    {showTimePicker ? '▲' : '▼'}
+                  </Text>
                 </TouchableOpacity>
                 
                 {showTimePicker && (
@@ -253,13 +269,16 @@ const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: '#f9fafb',
     borderWidth: 2,
-    borderColor: '#3b82f6',
+    borderColor: '#d1d5db',
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  dropdownActive: {
+    borderColor: '#3b82f6',
   },
   dropdownText: {
     fontSize: 16,
@@ -271,8 +290,11 @@ const styles = StyleSheet.create({
   },
   dropdownArrow: {
     fontSize: 12,
-    color: '#3b82f6',
+    color: '#9ca3af',
     marginLeft: 8,
+  },
+  dropdownArrowActive: {
+    color: '#3b82f6',
   },
   dropdownMenu: {
     marginTop: 8,
@@ -327,12 +349,16 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   todayCell: {
-    backgroundColor: '#e0f2fe',
+    backgroundColor: '#f3f4f6',
     borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#d1d5db',
   },
   selectedDayCell: {
     backgroundColor: '#3b82f6',
     borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#3b82f6',
   },
   pastDayCell: {
     opacity: 0.3,
@@ -342,7 +368,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   todayText: {
-    color: '#0369a1',
+    color: '#6b7280',
     fontWeight: '600',
   },
   selectedDayText: {
