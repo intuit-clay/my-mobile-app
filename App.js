@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView } from 
 import { useState } from 'react';
 
 export default function App() {
-  const [tasks, setTasks] = useState([]);
-  const [inputText, setInputText] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState('');
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const meetingTopics = [
     'Brainstorm new content',
@@ -15,49 +16,37 @@ export default function App() {
     'Discuss content guidelines'
   ];
 
-  const addTask = () => {
-    if (inputText.trim()) {
-      setTasks([...tasks, { id: Date.now(), text: inputText, completed: false }]);
-      setInputText('');
-    }
+  const timeSlots = [
+    '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM',
+    '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'
+  ];
+
+  const getDaysInMonth = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    return { firstDay, daysInMonth, today: today.getDate(), month, year };
   };
 
-  const toggleTask = (id) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ));
-  };
-
-  const deleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
-  };
+  const { firstDay, daysInMonth, today, month, year } = getDaysInMonth();
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View style={styles.contentWrapper}>
+      <ScrollView style={styles.contentWrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>My Tasks</Text>
-          <Text style={styles.subtitle}>{tasks.length} tasks</Text>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Add a new task..."
-            value={inputText}
-            onChangeText={setInputText}
-            onSubmitEditing={addTask}
-          />
-          <TouchableOpacity style={styles.addButton} onPress={addTask}>
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+          <Text style={styles.title}>Book Time with Content Designer</Text>
+          <Text style={styles.subtitle}>Select a date and time</Text>
         </View>
 
         <View style={styles.bookingSection}>
-          <Text style={styles.bookingTitle}>Book Time with Content Designer</Text>
-          <View style={styles.bookingCard}>
-            <Text style={styles.bookingLabel}>Select meeting topic:</Text>
+          <Text style={styles.sectionTitle}>Meeting Topic</Text>
+          <View style={styles.card}>
             <TouchableOpacity 
               style={styles.dropdown}
               onPress={() => setShowDropdown(!showDropdown)}
@@ -87,38 +76,109 @@ export default function App() {
                 ))}
               </View>
             )}
-
-            {selectedTopic ? (
-              <View style={styles.selectedTopicBox}>
-                <Text style={styles.selectedTopicText}>
-                  Selected: {selectedTopic}
-                </Text>
-              </View>
-            ) : null}
           </View>
         </View>
 
-        <ScrollView style={styles.taskList}>
-          {tasks.map(task => (
-            <View key={task.id} style={styles.taskItem}>
-              <TouchableOpacity 
-                style={styles.taskContent}
-                onPress={() => toggleTask(task.id)}
-              >
-                <View style={[styles.checkbox, task.completed && styles.checkboxCompleted]}>
-                  {task.completed && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-                <Text style={[styles.taskText, task.completed && styles.taskTextCompleted]}>
-                  {task.text}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deleteTask(task.id)}>
-                <Text style={styles.deleteButton}>✕</Text>
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Select Date</Text>
+          <View style={styles.card}>
+            <Text style={styles.monthTitle}>{monthNames[month]} {year}</Text>
+            
+            <View style={styles.calendarHeader}>
+              {dayNames.map(day => (
+                <Text key={day} style={styles.dayName}>{day}</Text>
+              ))}
+            </View>
+
+            <View style={styles.calendarGrid}>
+              {[...Array(firstDay)].map((_, index) => (
+                <View key={`empty-${index}`} style={styles.dayCell} />
+              ))}
+              
+              {[...Array(daysInMonth)].map((_, index) => {
+                const day = index + 1;
+                const isToday = day === today;
+                const isPast = day < today;
+                const isSelected = selectedDate === day;
+                
+                return (
+                  <TouchableOpacity
+                    key={day}
+                    style={[
+                      styles.dayCell,
+                      isToday && styles.todayCell,
+                      isSelected && styles.selectedDayCell,
+                      isPast && styles.pastDayCell
+                    ]}
+                    onPress={() => !isPast && setSelectedDate(day)}
+                    disabled={isPast}
+                  >
+                    <Text style={[
+                      styles.dayText,
+                      isToday && styles.todayText,
+                      isSelected && styles.selectedDayText,
+                      isPast && styles.pastDayText
+                    ]}>
+                      {day}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Select Time</Text>
+          <View style={styles.card}>
+            <TouchableOpacity 
+              style={styles.dropdown}
+              onPress={() => setShowTimePicker(!showTimePicker)}
+            >
+              <Text style={[styles.dropdownText, !selectedTime && styles.placeholderText]}>
+                {selectedTime || 'Choose a time...'}
+              </Text>
+              <Text style={styles.dropdownArrow}>{showTimePicker ? '▲' : '▼'}</Text>
+            </TouchableOpacity>
+            
+            {showTimePicker && (
+              <View style={styles.dropdownMenu}>
+                {timeSlots.map((time, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.dropdownItem,
+                      index === timeSlots.length - 1 && styles.dropdownItemLast
+                    ]}
+                    onPress={() => {
+                      setSelectedTime(time);
+                      setShowTimePicker(false);
+                    }}
+                  >
+                    <Text style={styles.dropdownItemText}>{time}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+        </View>
+
+        {selectedTopic && selectedDate && selectedTime && (
+          <View style={styles.bookingSection}>
+            <View style={styles.confirmationCard}>
+              <Text style={styles.confirmationTitle}>Booking Summary</Text>
+              <Text style={styles.confirmationText}>Topic: {selectedTopic}</Text>
+              <Text style={styles.confirmationText}>
+                Date: {monthNames[month]} {selectedDate}, {year}
+              </Text>
+              <Text style={styles.confirmationText}>Time: {selectedTime}</Text>
+              <TouchableOpacity style={styles.confirmButton}>
+                <Text style={styles.confirmButtonText}>Confirm Booking</Text>
               </TouchableOpacity>
             </View>
-          ))}
-        </ScrollView>
-      </View>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -133,7 +193,6 @@ const styles = StyleSheet.create({
   contentWrapper: {
     width: '100%',
     maxWidth: 800,
-    flex: 1,
   },
   header: {
     paddingHorizontal: 20,
@@ -149,108 +208,17 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 5,
   },
-  inputContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderRadius: 10,
-    fontSize: 16,
-    marginRight: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  addButton: {
-    backgroundColor: '#007AFF',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: '300',
-  },
-  taskList: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  taskItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  taskContent: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    marginRight: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkboxCompleted: {
-    backgroundColor: '#007AFF',
-  },
-  checkmark: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  taskText: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
-  },
-  taskTextCompleted: {
-    textDecorationLine: 'line-through',
-    color: '#999',
-  },
-  deleteButton: {
-    fontSize: 24,
-    color: '#ff3b30',
-    paddingHorizontal: 10,
-  },
   bookingSection: {
     marginHorizontal: 20,
     marginBottom: 20,
   },
-  bookingTitle: {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
     marginBottom: 10,
   },
-  bookingCard: {
+  card: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
@@ -259,11 +227,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-  },
-  bookingLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
   },
   dropdown: {
     backgroundColor: '#f9fafb',
@@ -296,6 +259,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e5e7eb',
     overflow: 'hidden',
+    maxHeight: 250,
   },
   dropdownItem: {
     paddingHorizontal: 16,
@@ -310,14 +274,93 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  selectedTopicBox: {
-    marginTop: 12,
-    padding: 12,
-    backgroundColor: '#eff6ff',
+  monthTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  calendarHeader: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  dayName: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+    paddingVertical: 8,
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  dayCell: {
+    width: '14.28%',
+    aspectRatio: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+  },
+  todayCell: {
+    backgroundColor: '#e0f2fe',
     borderRadius: 8,
   },
-  selectedTopicText: {
-    color: '#1e40af',
+  selectedDayCell: {
+    backgroundColor: '#3b82f6',
+    borderRadius: 8,
+  },
+  pastDayCell: {
+    opacity: 0.3,
+  },
+  dayText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  todayText: {
+    color: '#0369a1',
+    fontWeight: '600',
+  },
+  selectedDayText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  pastDayText: {
+    color: '#999',
+  },
+  confirmationCard: {
+    backgroundColor: '#10b981',
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  confirmationTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 12,
+  },
+  confirmationText: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 6,
+  },
+  confirmButton: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: '#10b981',
     fontSize: 16,
     fontWeight: '600',
   },
