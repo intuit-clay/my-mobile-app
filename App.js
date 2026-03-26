@@ -40,7 +40,7 @@ export default function App() {
       <StatusBar style="auto" />
       <ScrollView style={styles.contentWrapper}>
         <View style={styles.header}>
-          <Text style={styles.title}>Book Time with Content Designer</Text>
+          <Text style={styles.title}>Kyle Office Hours</Text>
           <Text style={styles.subtitle}>Select a date and time</Text>
         </View>
 
