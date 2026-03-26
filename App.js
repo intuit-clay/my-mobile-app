@@ -5,6 +5,7 @@ import { useState } from 'react';
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [inputText, setInputText] = useState('');
+  const [taxAmount, setTaxAmount] = useState('');
 
   const addTask = () => {
     if (inputText.trim()) {
@@ -43,6 +44,28 @@ export default function App() {
         <TouchableOpacity style={styles.addButton} onPress={addTask}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.taxSection}>
+        <Text style={styles.taxTitle}>Tax Calculator</Text>
+        <View style={styles.taxCard}>
+          <Text style={styles.taxLabel}>Enter tax amount:</Text>
+          <TextInput
+            style={styles.taxInput}
+            placeholder="$0.00"
+            value={taxAmount}
+            onChangeText={setTaxAmount}
+            keyboardType="numeric"
+            placeholderTextColor="#999"
+          />
+          {taxAmount ? (
+            <View style={styles.taxResultBox}>
+              <Text style={styles.taxResultText}>
+                Tax Amount: ${taxAmount}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       </View>
 
       <ScrollView style={styles.taskList}>
@@ -179,5 +202,51 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#ff3b30',
     paddingHorizontal: 10,
+  },
+  taxSection: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  taxTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 10,
+  },
+  taxCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  taxLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  taxInput: {
+    backgroundColor: '#f9fafb',
+    borderWidth: 2,
+    borderColor: '#3b82f6',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 18,
+    color: '#333',
+  },
+  taxResultBox: {
+    marginTop: 12,
+    padding: 12,
+    backgroundColor: '#eff6ff',
+    borderRadius: 8,
+  },
+  taxResultText: {
+    color: '#1e40af',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
