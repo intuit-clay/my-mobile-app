@@ -5,7 +5,15 @@ import { useState } from 'react';
 export default function App() {
   const [tasks, setTasks] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [taxAmount, setTaxAmount] = useState('');
+  const [selectedTopic, setSelectedTopic] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const meetingTopics = [
+    'Brainstorm new content',
+    'Fix existing content',
+    'Review content strategy',
+    'Discuss content guidelines'
+  ];
 
   const addTask = () => {
     if (inputText.trim()) {
@@ -46,22 +54,44 @@ export default function App() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.taxSection}>
-          <Text style={styles.taxTitle}>Tax Calculator</Text>
-          <View style={styles.taxCard}>
-            <Text style={styles.taxLabel}>Enter tax amount:</Text>
-            <TextInput
-              style={styles.taxInput}
-              placeholder="$0.00"
-              value={taxAmount}
-              onChangeText={setTaxAmount}
-              keyboardType="numeric"
-              placeholderTextColor="#999"
-            />
-            {taxAmount ? (
-              <View style={styles.taxResultBox}>
-                <Text style={styles.taxResultText}>
-                  Tax Amount: ${taxAmount}
+        <View style={styles.bookingSection}>
+          <Text style={styles.bookingTitle}>Book Time with Content Designer</Text>
+          <View style={styles.bookingCard}>
+            <Text style={styles.bookingLabel}>Select meeting topic:</Text>
+            <TouchableOpacity 
+              style={styles.dropdown}
+              onPress={() => setShowDropdown(!showDropdown)}
+            >
+              <Text style={[styles.dropdownText, !selectedTopic && styles.placeholderText]}>
+                {selectedTopic || 'Choose a topic...'}
+              </Text>
+              <Text style={styles.dropdownArrow}>{showDropdown ? '▲' : '▼'}</Text>
+            </TouchableOpacity>
+            
+            {showDropdown && (
+              <View style={styles.dropdownMenu}>
+                {meetingTopics.map((topic, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.dropdownItem,
+                      index === meetingTopics.length - 1 && styles.dropdownItemLast
+                    ]}
+                    onPress={() => {
+                      setSelectedTopic(topic);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    <Text style={styles.dropdownItemText}>{topic}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            {selectedTopic ? (
+              <View style={styles.selectedTopicBox}>
+                <Text style={styles.selectedTopicText}>
+                  Selected: {selectedTopic}
                 </Text>
               </View>
             ) : null}
@@ -210,17 +240,17 @@ const styles = StyleSheet.create({
     color: '#ff3b30',
     paddingHorizontal: 10,
   },
-  taxSection: {
+  bookingSection: {
     marginHorizontal: 20,
     marginBottom: 20,
   },
-  taxTitle: {
+  bookingTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
     marginBottom: 10,
   },
-  taxCard: {
+  bookingCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
@@ -230,28 +260,63 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  taxLabel: {
+  bookingLabel: {
     fontSize: 14,
     color: '#666',
     marginBottom: 8,
   },
-  taxInput: {
+  dropdown: {
     backgroundColor: '#f9fafb',
     borderWidth: 2,
     borderColor: '#3b82f6',
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    fontSize: 18,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  placeholderText: {
+    color: '#999',
+  },
+  dropdownArrow: {
+    fontSize: 12,
+    color: '#3b82f6',
+    marginLeft: 8,
+  },
+  dropdownMenu: {
+    marginTop: 8,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    overflow: 'hidden',
+  },
+  dropdownItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  dropdownItemLast: {
+    borderBottomWidth: 0,
+  },
+  dropdownItemText: {
+    fontSize: 16,
     color: '#333',
   },
-  taxResultBox: {
+  selectedTopicBox: {
     marginTop: 12,
     padding: 12,
     backgroundColor: '#eff6ff',
     borderRadius: 8,
   },
-  taxResultText: {
+  selectedTopicText: {
     color: '#1e40af',
     fontSize: 16,
     fontWeight: '600',
