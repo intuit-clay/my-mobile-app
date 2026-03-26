@@ -8,6 +8,8 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [additionalContext, setAdditionalContext] = useState('');
+  const [link, setLink] = useState('');
 
   const meetingTopics = [
     'Brainstorm new content',
@@ -183,6 +185,42 @@ export default function App() {
           </View>
         </View>
 
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Additional Context</Text>
+          <View style={styles.card}>
+            <TextInput
+              style={[
+                styles.textArea,
+                additionalContext && styles.textAreaActive
+              ]}
+              placeholder="Add any additional details or context..."
+              value={additionalContext}
+              onChangeText={setAdditionalContext}
+              multiline
+              numberOfLines={4}
+              placeholderTextColor="#999"
+            />
+          </View>
+        </View>
+
+        <View style={styles.bookingSection}>
+          <Text style={styles.sectionTitle}>Link (Optional)</Text>
+          <View style={styles.card}>
+            <TextInput
+              style={[
+                styles.textInput,
+                link && styles.textInputActive
+              ]}
+              placeholder="Paste a link to relevant content..."
+              value={link}
+              onChangeText={setLink}
+              keyboardType="url"
+              placeholderTextColor="#999"
+              autoCapitalize="none"
+            />
+          </View>
+        </View>
+
         {selectedTopic && selectedDate && selectedTime && (
           <View style={styles.bookingSection}>
             <View style={styles.confirmationCard}>
@@ -192,6 +230,12 @@ export default function App() {
                 Date: {monthNames[month]} {selectedDate}, {year}
               </Text>
               <Text style={styles.confirmationText}>Time: {selectedTime}</Text>
+              {additionalContext ? (
+                <Text style={styles.confirmationText}>Context: {additionalContext}</Text>
+              ) : null}
+              {link ? (
+                <Text style={styles.confirmationText}>Link: {link}</Text>
+              ) : null}
               <TouchableOpacity style={styles.confirmButton}>
                 <Text style={styles.confirmButtonText}>Confirm Booking</Text>
               </TouchableOpacity>
@@ -377,6 +421,34 @@ const styles = StyleSheet.create({
   },
   pastDayText: {
     color: '#999',
+  },
+  textArea: {
+    backgroundColor: '#f9fafb',
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#333',
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  textAreaActive: {
+    borderColor: '#3b82f6',
+  },
+  textInput: {
+    backgroundColor: '#f9fafb',
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#333',
+  },
+  textInputActive: {
+    borderColor: '#3b82f6',
   },
   confirmationCard: {
     backgroundColor: '#10b981',
